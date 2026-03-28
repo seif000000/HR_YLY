@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم للإدارة{% endblock %}
+
+{% block content %}
+<div class="mascot-welcome">
+    <img src="{{ url_for('static', filename='img/mascot.png') }}" alt="Mascot">
+    <div>
+        <h1 data-i18n="admin_dashboard">لوحة التحكم للإدارة</h1>
+        <p>إدارة التقييمات، الإعدادات، وأعضاء الفريق.</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Settings Column -->
+    <div class="card">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+            <svg style="width: 24px; color: var(--secondary-color);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <h3 data-i18n="settings" style="margin: 0;">إعدادات التقييم</h3>
+        </div>
+        <form action="/admin/settings" method="post">
+            <div class="input-group">
+                <label data-i18n="meetings">إجمالي الاجتماعات المطلوبة</label>
+                <input type="number" name="total_meetings" value="{{ settings.total_meetings }}" class="btn">
+            </div>
+            <div class="input-group">
+                <label data-i18n="events">إجمالي الفعاليات المطلوبة</label>
+                <input type="number" name="total_events" value="{{ settings.total_events }}" class="btn">
+            </div>
+            <div class="input-group">
+                <label data-i18n="tasks">إجمالي التكليفات المطلوبة</label>
+                <input type="number" name="total_tasks" value="{{ settings.total_tasks }}" class="btn">
+            </div>
+            <div class="input-group">
+                <label>الدرجة الفنية القصوى (افتراضي: 55)</label>
+                <input type="number" name="technical_max" value="{{ settings.technical_max }}" class="btn">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="settings">حفظ الإعدادات</button>
+        </form>
+    </div>
+
+    <!-- Pending Submissions Section -->
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem;" data-i18n="pending_subs">تكليفات قيد المراجعة</h3>
+        
+        <div class="member-grid">
+            {% for sub in submissions %}
+            <div class="member-card" style="border-left: 4px solid var(--secondary-color);">
+                <div class="header">
+                    <div>
+                        <div class="name">{{ sub.author.name }}</div>
+                        <div class="committee">{{ sub.author.committee }}</div>
+                    </div>
+                    <span class="badge {{ sub.type }}">
+                        {% if sub.type == 'meeting' %}اجتماع - Meeting
+                        {% elif sub.type == 'event' %}فعالية - Event
+                        {% else %}تكليف - Task{% endif %}
+                    </span>
+                </div>
+                
+                <div style="margin: 1rem 0;">
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary-color);">{{ sub.title }}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);"><i class="far fa-calendar-alt"></i> التاريخ: {{ sub.custom_date }}</div>
+                </div>
+
+                {% if sub.screenshot %}
+                <div style="margin-bottom: 1rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
+                    <img src="{{ url_for('static', filename='uploads/' + sub.screenshot) }}" alt="Proof" style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;" onclick="window.open(this.src)">
+                </div>
+                {% endif %}
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <form action="/admin/submission/{{ sub.id }}/approve" method="post" style="flex: 1;">
+                        <button class="btn btn-primary" style="width: 100%; padding: 0.6rem; font-size: 0.9rem;">موافقة ✅</button>
+                    </form>
+                    <form action="/admin/submission/{{ sub.id }}/reject" method="post">
+                        <button class="btn" style="background: var(--accent-color); color: white; padding: 0.6rem 1rem;"><i class="fas fa-trash"></i> 🗑️</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary); opacity: 0.5;">
+                <i class="fas fa-check-circle" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+                لا يوجد تكليفات قيد المراجعة
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Section: Member Management -->
+<div class="card" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 1.5rem;">إدارة الأعضاء والتقييم</h3>
+    
+    <!-- Add Member Form -->
+    <details style="margin-bottom: 2rem;">
+        <summary class="btn" style="cursor: pointer; background: var(--bg-color);">+ إضافة عضو جديد</summary>
+        <form action="/admin/member/create" method="post" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; padding: 1.5rem; background: var(--bg-color); border-radius: 10px;">
+            <div class="input-group"><label>اسم المستخدم</label><input type="text" name="username" class="btn" required></div>
+            <div class="input-group"><label>الاسم الكامل</label><input type="text" name="name" class="btn" required></div>
+            <div class="input-group"><label>اللجنة</label><input type="text" name="committee" class="btn" required></div>
+            <div class="input-group"><label>كلمة المرور</label><input type="password" name="password" class="btn" placeholder="123456"></div>
+            <button type="submit" class="btn btn-primary" style="height: fit-content; align-self: flex-end; margin-bottom: 1.2rem;">إضافة العضو</button>
+        </form>
+    </details>
+
+    <!-- Member Management & Evaluation -->
+    <div class="card" style="margin-top: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2>إدارة الأعضاء والتقييم</h2>
+            <p class="text-secondary" style="font-size: 0.9rem;">إجمالي الأعضاء: {{ members|length }}</p>
+        </div>
+
+        <div class="member-grid">
+            {% for m in members %}
+            <div class="member-card">
+                <div class="header">
+                    <div>
+                        <div class="name">{{ m.user.name }}</div>
+                        <div class="committee">{{ m.user.committee }}</div>
+                    </div>
+                    {% if m.last_eval %}
+                        {% if m.last_eval.published %}
+                            <span class="status-badge published">منشور</span>
+                        {% else %}
+                            <span class="status-badge draft">مسودة</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="status-badge none">لا يوجد تقييم</span>
+                    {% endif %}
+                </div>
+
+                <!-- Progress Stats -->
+                <div class="stats-lite">
+                        <div class="stat-mini">
+                            <span class="val">{{ m.counts.m }}<small>/{{ settings.total_meetings }}</small></span>
+                            <span class="lbl">اجتماع - Meetings</span>
+                        </div>
+                        <div class="stat-mini">
+                            <span class="val">{{ m.counts.e }}<small>/{{ settings.total_events }}</small></span>
+                            <span class="lbl">فعالية - Events</span>
+                        </div>
+                        <div class="stat-mini">
+                            <span class="val">{{ m.counts.t }}<span style="font-size: 0.6rem; opacity: 0.5;">({{ (m.counts.t / settings.total_tasks * 30)|round|int if settings.total_tasks else 0 }} pts)</span></span>
+                            <span class="lbl">تكليفات - Tasks</span>
+                        </div>
+                </div>
+
+                <!-- Evaluation Form -->
+                <form action="/admin/evaluate/{{ m.user.id }}" method="post" class="eval-form-compact">
+                    <div class="input-row-grid">
+                        <div style="grid-column: span 2; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.8rem; color: var(--secondary-color);">Manual Scoring</div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Behavior (10)</label>
+                            <input type="number" name="behavior" step="0.1" max="10" value="{{ m.last_eval.behavior if m.last_eval else '' }}" placeholder="0" class="compact-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Hierarchy (10)</label>
+                            <input type="number" name="hierarchy" step="0.1" max="10" value="{{ m.last_eval.hierarchy if m.last_eval else '10' }}" class="compact-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Group Int. (5)</label>
+                            <input type="number" name="group" step="0.1" max="5" value="{{ m.last_eval.interaction_group if m.last_eval else '' }}" placeholder="0" class="compact-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Follower Int. (5)</label>
+                            <input type="number" name="follower" step="0.1" max="5" value="{{ m.last_eval.interaction_follower if m.last_eval else '' }}" placeholder="0" class="compact-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Bonus (10)</label>
+                            <input type="number" name="bonus_head" step="0.1" max="10" value="{{ m.last_eval.bonus_head if m.last_eval else '' }}" placeholder="0" class="compact-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem; display: block; margin-bottom: 2px;">Tech Score (55)</label>
+                            <input type="number" name="technical" step="0.1" max="55" value="{{ m.last_eval.technical_score if m.last_eval else '' }}" placeholder="30" class="compact-input">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.6rem; font-size: 0.8rem;"><i class="fas fa-save"></i> حفظ التقييم</button>
+                    </div>
+                </form>
+
+                <!-- History Section (Expandable) -->
+                {% if m.all_evals and m.all_evals|length > 1 %}
+                <details style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    <summary style="cursor: pointer; opacity: 0.8;">عرض سجل التقييمات ({{ m.all_evals|length - 1 }})</summary>
+                    <div style="margin-top: 0.5rem; border-top: 1px dashed var(--border-color); padding-top: 0.5rem;">
+                        {% for ev in m.all_evals[1:] %}
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span>{{ ev.date.strftime('%Y-%m-%d') }}</span>
+                            <span style="font-weight: bold; color: var(--primary-color);">{{ ev.grade }} ({{ ev.total_score | int }} pts)</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </details>
+                {% endif %}
+
+                <!-- Status Actions -->
+                {% if m.last_eval %}
+                <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 0.8rem;">
+                    {% if not m.last_eval.published %}
+                    <form action="/admin/evaluation/publish/{{ m.last_eval.id }}" method="post" style="flex: 1;">
+                        <button type="submit" class="btn btn-secondary" style="width: 100%; padding: 0.5rem; font-size: 0.8rem; height: 32px; line-height: 10px;">نشر ✅</button>
+                    </form>
+                    {% endif %}
+                    <a href="{{ url_for('static', filename='uploads/report_' ~ m.user.id ~ '.pdf') }}" target="_blank" class="btn" style="padding: 0 10px; height: 32px; line-height: 32px; background: var(--bg-color); border: 1px solid var(--border-color);"><i class="fas fa-eye"></i></a>
+                    <form action="/admin/evaluation/delete/{{ m.last_eval.id }}" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا التقييم؟')">
+                        <button type="submit" class="btn" style="background: var(--accent-color); color: white; padding: 0 10px; height: 32px; line-height: 32px;"><i class="fas fa-trash"></i></button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .mini-input { width: 70px !important; padding: 5px !important; font-size: 0.9rem !important; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+    .badge.meeting { background: rgba(0, 45, 114, 0.1); color: var(--primary-color); }
+    .badge.event { background: rgba(192, 147, 0, 0.1); color: var(--secondary-color); }
+    .badge.task { background: rgba(227, 28, 45, 0.1); color: var(--accent-color); }
+    .btn-sm { padding: 5px 10px !important; }
+</style>
+{% endblock %}

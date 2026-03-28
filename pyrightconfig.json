@@ -1,0 +1,8 @@
+{
+  "pythonVersion": "3.8",
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": ["backend"],
+  "reportMissingImports": "warning",
+  "reportMissingModuleSource": "none"
+}

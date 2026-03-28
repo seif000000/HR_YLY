@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YLY HR Evaluation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/ministry_logo.png') }}" alt="Ministry Logo">
+                <img src="{{ url_for('static', filename='img/yly_logo.png') }}" alt="YLY Logo">
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}" class="nav-link" data-i18n="dashboard">لوحة التحكم</a>
+                {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link" data-i18n="settings">الإعدادات</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="nav-link" data-i18n="logout">تسجيل الخروج</a>
+            </nav>
+            
+            <div class="theme-switch-wrapper">
+                <button id="theme-toggle" class="btn">🌓 <span data-i18n="dark_mode">الوضع الليلي</span></button>
+                <button id="lang-toggle" class="btn">🌐 Language</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2 id="page-title">{% block title %}{% endblock %}</h2>
+                <div class="user-info">
+                    <span data-i18n="hi">أهلاً بك</span>، {{ current_user.name }}
+                </div>
+            </header>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-card {{ category }}">
+                <img src="{{ url_for('static', filename='img/mascot.png') }}" alt="Mascot" class="flash-mascot">
+                <div class="flash-content">
+                    <p>{{ message }}</p>
+                </div>
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+            <div class="container" style="margin-top: 2rem; padding-bottom: 5rem;">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border-color); margin-top: 3rem;">
+        <p dir="rtl">تم تطوير هذا الموقع بواسطة <strong>seif nady</strong></p>
+        <p dir="rtl" style="opacity: 0.7;">هذا الموقع غير رسمي من وزارة الشباب والرياضة، تم تطويره فقط لمساعدة <strong>HR SEIF NADY</strong></p>
+        <p style="margin-top: 0.5rem; opacity: 0.5;">&copy; 2026 YLY HR System</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

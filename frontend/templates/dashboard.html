@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-i18n="dashboard">لوحة التحكم</span>{% endblock %}
+
+{% block content %}
+<div class="mascot-welcome">
+    <img src="{{ url_for('static', filename='img/mascot.png') }}" alt="Mascot">
+    <div>
+        <h1 data-i18n="hi">أهلاً بك يا بطل!</h1>
+        <p>هنا يمكنك متابعة تقدمك وتقديم تكليفاتك.</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="card">
+        <h3 data-i18n="score_level">مستوى الأداء</h3>
+        <div class="score-badge">{{ eval.hr_score if eval else 0 }}/110</div>
+        <p>HR Score ({{ (counts.meetings / settings.total_meetings * 20) | round(1) if settings.total_meetings else 0 }} اجتماع - Meeting pts)</p>
+    </div>
+    <div class="card">
+        <h3 data-i18n="submit_evidence">تقديم التكليفات</h3>
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+                <label data-i18n="type">النوع</label>
+                <select name="type" class="btn" style="width: 100%;">
+                    <option value="meeting">اجتماع - Meeting</option>
+                    <option value="event">فعالية - Event</option>
+                    <option value="task">تكليف - Task</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label data-i18n="title">العنوان / الاسم</label>
+                <input type="text" name="title" placeholder="اسم الاجتماع أو الفعالية" class="btn" required>
+            </div>
+            <div class="input-group">
+                <label data-i18n="date">التاريخ</label>
+                <input type="text" name="custom_date" placeholder="التاريخ (مثلاً: 20/12)" class="btn" required>
+            </div>
+            <div class="input-group">
+                <label data-i18n="screenshot">إثبات (تصوير الشاشة)</label>
+                <input type="file" name="screenshot" class="btn" style="width: 100%;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="submit_evidence">إرسال الإثبات</button>
+        </form>
+    </div>
+    {% if evaluations and evaluations|length > 1 %}
+    <div class="card" style="margin-top: 2rem; width: 100%;">
+        <h2 dir="rtl" style="margin-bottom: 1rem;">سجل التقييمات السابقة</h2>
+        <div class="table-responsive">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color); text-align: right;">
+                        <th style="padding: 12px;">التاريخ</th>
+                        <th style="padding: 12px;">التقدير</th>
+                        <th style="padding: 12px;">المجموع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ev in evaluations[1:] %}
+                    <tr style="border-bottom: 1px solid var(--border-color); text-align: right;">
+                        <td style="padding: 12px; font-size: 0.9rem;">{{ ev.date.strftime('%Y-%m-%d') }}</td>
+                        <td style="padding: 12px;"><span class="status-badge published" style="font-size: 0.8rem;">{{ ev.grade }}</span></td>
+                        <td style="padding: 12px; font-weight: bold;">{{ ev.total_score | int }}/110</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

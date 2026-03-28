@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | YLY HR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-color), #010409);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .login-card {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-card img.mascot {
+            height: 120px;
+            margin-bottom: 2rem;
+        }
+        .login-card h2 {
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        .login-logo {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .login-logo img {
+            height: 60px;
+        }
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            text-align: right;
+            border: 1px solid transparent;
+            animation: slideDown 0.4s ease-out;
+        }
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            animation: slideDown 0.4s ease-out, shake 0.5s ease-in-out;
+        }
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .alert-icon {
+            height: 35px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        .alert-message {
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Mobile Improvements */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.25rem;
+                border-radius: 1.5rem;
+            }
+            .login-card img.mascot {
+                height: 100px;
+                margin-bottom: 1.5rem;
+            }
+            .login-logo img {
+                height: 50px;
+            }
+            .login-card h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .input-group input {
+                padding: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='img/ministry_logo.png') }}" alt="Ministry">
+            <img src="{{ url_for('static', filename='img/yly_logo.png') }}" alt="YLY">
+        </div>
+        <img src="{{ url_for('static', filename='img/mascot.png') }}" alt="Mascot" class="mascot">
+        <h2 data-i18n="login_title">تسجيل الدخول</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }} alert-{{ category }}">
+                <img src="{{ url_for('static', filename='img/mascot.png') }}" alt="Mascot" class="alert-icon">
+                <div class="alert-message">
+                  {{ message }}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <form action="/login" method="post">
+            <div class="input-group">
+                <label data-i18n="username">اسم المستخدم</label>
+                <input type="text" name="username" required placeholder="اسم المستخدم">
+            </div>
+            <div class="input-group">
+                <label data-i18n="password">كلمة المرور</label>
+                <input type="password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                دخول
+            </button>
+        </form>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

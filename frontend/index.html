@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YLY HR | Youth Leading Youth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #002D72;
+            --gold: #C09300;
+            --red: #E31C2D;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --card: #fff;
+        }
+        [data-theme="dark"] {
+            --bg: #010409;
+            --text: #e6edf3;
+            --card: #0d1117;
+            --primary: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === HERO === */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #001a4d 0%, #002D72 50%, #003580 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(192,147,0,0.15) 0%, transparent 70%);
+            top: -100px; right: -100px;
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+            bottom: -100px; left: -100px;
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Logos */
+        .logos {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out;
+        }
+        .logos img {
+            height: 80px;
+            filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
+            transition: transform 0.3s;
+        }
+        .logos img:hover { transform: scale(1.08); }
+        .logo-divider {
+            width: 2px; height: 60px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        /* Season Badge */
+        .season-badge {
+            z-index: 1;
+            animation: slideDown 0.9s ease-out;
+            margin-bottom: 2rem;
+        }
+        .season-badge img { height: 50px; }
+
+        /* Mascot */
+        .mascot-wrapper {
+            position: absolute;
+            right: 5%;
+            bottom: 0;
+            height: 65vh;
+            max-height: 550px;
+            z-index: 2;
+            animation: mascotIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .mascot-wrapper img {
+            height: 100%;
+            filter: drop-shadow(0 10px 40px rgba(0,0,0,0.4));
+        }
+        @keyframes mascotIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Hero text */
+        .hero-content {
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+            animation: slideUp 1s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .hero-title span { color: var(--gold); }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 3rem;
+        }
+
+        /* CTA Button */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--gold), #e5a800);
+            color: #001a4d;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 30px rgba(192,147,0,0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Cairo', sans-serif;
+        }
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 16px 40px rgba(192,147,0,0.6);
+        }
+        .cta-btn svg { width: 22px; height: 22px; }
+
+        /* === STATS STRIP === */
+        .stats-strip {
+            background: var(--card);
+            border-top: 4px solid var(--gold);
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            padding: 2.5rem;
+            flex-wrap: wrap;
+        }
+        [data-theme="dark"] .stats-strip { border-top-color: #fbbf24; }
+        .stat-item { text-align: center; }
+        .stat-num {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        [data-theme="dark"] .stat-num { color: #60a5fa; }
+        .stat-label { color: #64748b; font-size: 0.95rem; }
+
+        /* === DARK MODE TOGGLE === */
+        .top-bar {
+            position: fixed;
+            top: 1rem; left: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+        .toggle-btn {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover { background: rgba(255,255,255,0.25); }
+        [data-theme="dark"] .hero { background: linear-gradient(135deg, #000510 0%, #001030 50%, #001850 100%); }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="toggle-btn" onclick="toggleTheme()">🌓 Dark Mode</button>
+        <button class="toggle-btn" onclick="toggleLang()">🌐 عربي / EN</button>
+    </div>
+
+    <section class="hero">
+        <div class="logos">
+            <img src="static/img/ministry_logo.png" alt="Ministry of Youth and Sports">
+            <div class="logo-divider"></div>
+            <img src="static/img/yly_logo.png" alt="Youth Leading Youth">
+        </div>
+
+        <div class="season-badge">
+            <img src="static/img/sea7son_logo.png" alt="Season 7">
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span data-i18n="hero_title_1">نظام تقييم</span><br>
+                <span>HR | <span style="color:var(--gold)" data-i18n="hero_title_2">الموارد البشرية</span></span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="hero_sub">تتبّع أداءك، قدّم تكليفاتك، واحصل على تقييمك المهني</p>
+            <a href="/login" class="cta-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <span data-i18n="enter">ادخل للنظام</span>
+            </a>
+        </div>
+
+        <div class="mascot-wrapper">
+            <img src="static/img/mascot.png" alt="YLY Mascot">
+        </div>
+    </section>
+
+    <div class="stats-strip">
+        <div class="stat-item">
+            <div class="stat-num">110</div>
+            <div class="stat-label" data-i18n="max_hr">أقصى درجة HR</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">55</div>
+            <div class="stat-label" data-i18n="tech_score">الدرجة التقنية</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">A→D</div>
+            <div class="stat-label" data-i18n="grades">التقديرات</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">PDF</div>
+            <div class="stat-label" data-i18n="reports">تقرير مهني فوري</div>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            ar: { hero_title_1: 'نظام تقييم', hero_title_2: 'الموارد البشرية', hero_sub: 'تتبّع أداءك، قدّم تكليفاتك، واحصل على تقييمك المهني', enter: 'ادخل للنظام', max_hr: 'أقصى درجة HR', tech_score: 'الدرجة التقنية', grades: 'التقديرات', reports: 'تقرير مهني فوري' },
+            en: { hero_title_1: 'HR Evaluation', hero_title_2: 'System', hero_sub: 'Track your performance, submit your assignments, and get your professional evaluation', enter: 'Enter System', max_hr: 'Max HR Score', tech_score: 'Technical Score', grades: 'Grades', reports: 'Instant PDF Report' }
+        };
+
+        function applyLang(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = i18n[lang][el.dataset.i18n] || el.textContent;
+            });
+        }
+        function toggleLang() {
+            const cur = localStorage.getItem('lang') || 'ar';
+            const next = cur === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', next);
+            applyLang(next);
+        }
+        function toggleTheme() {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+        // Init
+        const savedLang = localStorage.getItem('lang') || 'ar';
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        applyLang(savedLang);
+    </script>
+</body>
+</html>
