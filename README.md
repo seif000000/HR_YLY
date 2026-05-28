@@ -66,9 +66,7 @@ Developed with ❤️ by **Seif Nady** to assist the HR team in managing the You
 
 ---
 
-## 📸 Preview
-*(Detailed screenshots can be found in the /docs folder)*
-- **Admin Dashboard**: Modern card-based member management.
+
 - **Member Dash**: Personal progress tracking.
 - **Bilingual UI**: Seamless Arabic/English integration.
 
